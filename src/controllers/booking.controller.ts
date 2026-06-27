@@ -93,3 +93,16 @@ export const cancelBooking = asyncHandler(
     return sendSuccess(res, "Booking cancelled", booking);
   },
 );
+
+
+
+export const completeBooking = asyncHandler(async (req: AuthRequest, res: Response) => {
+  const booking = await Booking.findOneAndUpdate(
+    { _id: req.params.id, barberId: { $exists: true } },
+    { status: "completed" },
+    { new: true }
+  );
+
+  if (!booking) return sendError(res, "Booking not found", 404);
+  return sendSuccess(res, "Booking completed", booking);
+});

@@ -29,6 +29,7 @@ import {
   confirmBooking,
   getMyBookings,
   cancelBooking,
+  completeBooking
 } from "../controllers/booking.controller.js";
 import { protect, restrictTo } from "../middleware/authMiddleware.js";
 import tenantMiddleware from "../middleware/tenantMiddleware.js";
@@ -48,5 +49,6 @@ router.post("/lock-slot", restrictTo("customer"), lockSlotValidator, validate, l
 router.post("/confirm", restrictTo("customer"), confirmBookingValidator, validate, confirmBooking);
 router.get("/my", restrictTo("customer"), getMyBookings);
 router.patch("/cancel/:id", restrictTo("customer"), cancelBooking);
+router.patch("/complete/:id", restrictTo("barber"), completeBooking);
 
 export default router;

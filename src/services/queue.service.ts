@@ -1,9 +1,22 @@
-// import { Queue } from "bullmq";
-// import redis from "../config/redis.js";
+// import dotenv from "dotenv";
+// dotenv.config();
 
-// export const notificationQueue = new Queue("notifications", {
-//   connection: redis,
-// });
+// let notificationQueue: any = null;
+
+// const getQueue = async () => {
+//   if (!notificationQueue) {
+//     const { Queue } = await import("bullmq");
+//     notificationQueue = new Queue("notifications", {
+//       connection: {
+//         host: "actual-weasel-144065.upstash.io",
+//         port: 6379,
+//         password: process.env.REDIS_PASSWORD!,
+//         tls: {},
+//       },
+//     });
+//   }
+//   return notificationQueue;
+// };
 
 // export const addNotificationJob = async (
 //   type: "booking-confirmed" | "booking-cancelled" | "reminder",
@@ -15,36 +28,20 @@
 //     salonName?: string;
 //   }
 // ) => {
-//   await notificationQueue.add(type, data, {
-//     attempts: 3,
-//     backoff: { type: "exponential", delay: 5000 },
-//   });
+//   try {
+//     const queue = await getQueue();
+//     await queue.add(type, data, {
+//       attempts: 3,
+//       backoff: { type: "exponential", delay: 5000 },
+//     });
+//   } catch (err) {
+//     console.error("Queue error:", err);
+//   }
 // };
 
-
-import { Queue } from "bullmq";
-
-const connection = {
-  host: "actual-weasel-144065.upstash.io",
-  port: 6379,
-  password: process.env.REDIS_PASSWORD!,
-  tls: {},
-};
-
-export const notificationQueue = new Queue("notifications", { connection });
-
 export const addNotificationJob = async (
-  type: "booking-confirmed" | "booking-cancelled" | "reminder",
-  data: {
-    phone: string;
-    name: string;
-    date?: string;
-    slot?: string;
-    salonName?: string;
-  }
-) => {
-  await notificationQueue.add(type, data, {
-    attempts: 3,
-    backoff: { type: "exponential", delay: 5000 },
-  });
+  type: string,
+  data: object
+): Promise<void> => {
+  console.log(`[Queue] Job: ${type}`, data);
 };
